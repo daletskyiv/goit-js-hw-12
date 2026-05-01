@@ -59,7 +59,11 @@ async function onSearchFormSubmit(event) {
 
     if (data.totalHits > 15) {
       await showLoadMoreButton();
-      refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
+    } else {
+      iziToast.info({
+        message: `Thats all photos of ${userQuery}`,
+        position: 'topRight',
+      });
     }
 
     galleryCardHeigth =
@@ -82,6 +86,8 @@ async function onLoadMoreBtnClick(event) {
   try {
     page++;
 
+    await hideLoadMoreButton();
+
     await showLoader();
 
     const data = await getImagesByQuery(userQuery, page);
@@ -96,12 +102,13 @@ async function onLoadMoreBtnClick(event) {
     const totalPages = Math.ceil(data.totalHits / 15);
 
     if (totalPages === page) {
-      await hideLoadMoreButton();
       refs.loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
       iziToast.info({
         message: `Thats all photos of ${userQuery}`,
         position: 'topRight',
       });
+    } else {
+      await showLoadMoreButton();
     }
   } catch (err) {
     iziToast.error({
@@ -114,3 +121,4 @@ async function onLoadMoreBtnClick(event) {
 }
 
 refs.searchForm.addEventListener('submit', onSearchFormSubmit);
+refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
