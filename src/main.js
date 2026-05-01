@@ -102,7 +102,7 @@ async function onLoadMoreBtnClick(event) {
     const totalPages = Math.ceil(data.totalHits / 15);
 
     if (totalPages === page) {
-      refs.loadMoreBtn.removeEventListener('click', onLoadMoreBtnClick);
+      await hideLoadMoreButton();
       iziToast.info({
         message: `Thats all photos of ${userQuery}`,
         position: 'topRight',
